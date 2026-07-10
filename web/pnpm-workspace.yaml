@@ -1,0 +1,5 @@
+# pnpm 11: 允许这些依赖在安装时执行 build 脚本
+# (否则 esbuild 平台二进制不会安装，vite/dev server 无法启动)
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
