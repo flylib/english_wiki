@@ -6,23 +6,34 @@ import (
 	"go-admin/app/wiki/models"
 )
 
-// seedContent 幂等注入初始分类树 + 「英语时态」示例条目(竖切验证用)。
-// 注意:仓库自带的 go-admin-db.db 才是内容主库(16 时态 + 从句三类等全量内容,经管理后台/API 维护),
-// 本 seed 只是空库兜底的最小样例,不与主库逐条同步。
+// seedContent 幂等注入英语知识体系。种子只补充不存在的分类/条目，
+// 不覆盖管理员在后台编辑过的正文，因此已有数据库也能逐步升级。
 func seedContent(db *gorm.DB) error {
-	var cnt int64
-	if err := db.Model(&models.WikiCategory{}).Count(&cnt).Error; err != nil {
-		return err
-	}
-	if cnt > 0 {
-		return nil
-	}
-
 	return db.Transaction(func(tx *gorm.DB) error {
 		mk := func(parent int, name, code, icon string, sort int) (int, error) {
+			var existing models.WikiCategory
+			if err := tx.Where("code = ?", code).First(&existing).Error; err == nil {
+				return existing.Id, nil
+			} else if err != gorm.ErrRecordNotFound {
+				return 0, err
+			}
 			c := models.WikiCategory{ParentId: parent, Name: name, Code: code, Icon: icon, Sort: sort}
 			err := tx.Create(&c).Error
 			return c.Id, err
+		}
+		putEntry := func(category int, title, summary, md string, min, max, sort int) error {
+			var existing models.WikiEntry
+			err := tx.Where("category_id = ? AND title = ?", category, title).First(&existing).Error
+			if err == nil {
+				return nil
+			}
+			if err != gorm.ErrRecordNotFound {
+				return err
+			}
+			return tx.Create(&models.WikiEntry{
+				CategoryId: category, Title: title, Summary: summary, ContentMd: md,
+				CefrMin: min, CefrMax: max, Status: "published", Sort: sort,
+			}).Error
 		}
 
 		// 一级:英语时态 / 英语从句 / 英语音标 / 词汇;各时态是时态下的二级分类
@@ -30,36 +41,49 @@ func seedContent(db *gorm.DB) error {
 		if err != nil {
 			return err
 		}
-		intro := models.WikiEntry{
-			CategoryId: tense,
-			Title:      "英语时态总览",
-			Summary:    "时态 = 时间 × 状态,一张图看懂 16 种时态",
-			ContentMd:  tenseIntroMd,
-			CefrMin:    1,
-			CefrMax:    7,
-			Status:     "published",
-			Sort:       0,
-		}
-		if err := tx.Create(&intro).Error; err != nil {
+		if err := putEntry(tense, "英语时态总览", "时态 = 时间 × 状态,一张图看懂 16 种时态", tenseIntroMd, 1, 7, 0); err != nil {
 			return err
 		}
 		if _, err = mk(0, "英语从句", "clause", "icon-branch", 2); err != nil {
 			return err
 		}
-		if _, err = mk(0, "句子成分", "sentence-elements", "", 3); err != nil {
+		sentenceElements, err := mk(0, "句子成分", "sentence-elements", "", 3)
+		if err != nil {
 			return err
 		}
-		if _, err = mk(0, "五种基本句型", "basic-sentence-patterns", "", 4); err != nil {
+		patterns, err := mk(0, "五种基本句型", "basic-sentence-patterns", "", 4)
+		if err != nil {
 			return err
 		}
-		if _, err = mk(0, "名词、冠词、介词", "noun-article-preposition", "", 5); err != nil {
+		nouns, err := mk(0, "名词、冠词、介词", "noun-article-preposition", "", 5)
+		if err != nil {
 			return err
 		}
-		if _, err = mk(0, "英语音标", "phonetics", "icon-sound", 6); err != nil {
+		phonetics, err := mk(0, "英语音标", "phonetics", "icon-sound", 6)
+		if err != nil {
 			return err
 		}
-		if _, err = mk(0, "词汇", "vocabulary", "icon-bookmark", 7); err != nil {
+		vocabulary, err := mk(0, "词汇", "vocabulary", "icon-bookmark", 7)
+		if err != nil {
 			return err
+		}
+
+		// 空库也要有一条完整的学习主线：先认识声音和词，再搭句子，最后进入语法。
+		rootEntries := []struct {
+			category           int
+			title, summary, md string
+			min, max           int
+		}{
+			{sentenceElements, "句子成分：谁在做什么？", "找到句子的积木：主语、谓语、宾语、表语和修饰语。", sentenceElementsMd, 1, 4},
+			{patterns, "五种基本句型：句子骨架", "用五个骨架读懂和造出大多数基础英语句子。", basicPatternsMd, 1, 4},
+			{nouns, "名词、冠词、介词：给事物贴标签", "从 a/an/the 到 in/on/at，掌握最常用的小词。", nounArticlePrepMd, 1, 4},
+			{phonetics, "英语音标：让耳朵先找到方向", "认识元音、辅音和重音，用声音帮助记单词。", phoneticsMd, 1, 3},
+			{vocabulary, "词汇学习地图：从会认到会用", "按主题、词块和间隔复习积累能真正开口的词汇。", vocabularyMd, 1, 7},
+		}
+		for i, e := range rootEntries {
+			if err := putEntry(e.category, e.title, e.summary, e.md, e.min, e.max, i); err != nil {
+				return err
+			}
 		}
 
 		for i, e := range tenseEntries {
@@ -67,21 +91,11 @@ func seedContent(db *gorm.DB) error {
 			if err != nil {
 				return err
 			}
-			row := models.WikiEntry{
-				CategoryId: cat,
-				Title:      e.title,
-				Summary:    e.summary,
-				ContentMd:  e.md,
-				CefrMin:    e.min,
-				CefrMax:    e.max,
-				Status:     "published",
-				Sort:       i + 1,
-			}
-			if err := tx.Create(&row).Error; err != nil {
+			if err := putEntry(cat, e.title, e.summary, e.md, e.min, e.max, i+1); err != nil {
 				return err
 			}
 		}
-		return nil
+		return ensureContentCatalog(tx)
 	})
 }
 
@@ -412,4 +426,136 @@ var tenseIntroMd = `
 | C1 高级 | 将来完成时、完成进行类 |
 
 点左侧菜单里的具体时态,直接阅读详细讲解。
+`
+
+var sentenceElementsMd = `
+## 一句话先记住
+
+英语句子像一列小火车：**谁/什么 + 做什么/是什么 + 其他信息**。
+
+> **Mia** **reads** **books** **every night**.
+>
+> 谁？Mia（主语）→ 做什么？reads（谓语）→ 什么？books（宾语）→ 什么时候？every night（状语）
+
+## 五块常见积木
+
+| 成分 | 英文 | 作用 | 例子 |
+|---|---|---|---|
+| 主语 | subject | 谁或什么 | **The dog** runs. |
+| 谓语 | verb | 做什么或是什么 | The dog **runs**. |
+| 宾语 | object | 动作作用于谁/什么 | I like **music**. |
+| 表语 | complement | 说明主语是什么/怎么样 | She is **happy**. |
+| 状语 | adverbial | 时间、地点、方式等 | We study **at home**. |
+
+## 小练习
+
+给句子贴标签：**Tom plays football after school.**
+
+答案：Tom = 主语；plays = 谓语；football = 宾语；after school = 时间状语。
+
+## 学习提醒
+
+先找动词，再问“谁做这件事”。不要一开始就逐词翻译，先抓住句子的骨架。
+`
+
+var basicPatternsMd = `
+## 五种句型 = 五种句子骨架
+
+把英语句子想成乐高。先搭好骨架，再加时间、地点和形容词。
+
+| 句型 | 骨架 | 例句 |
+|---|---|---|
+| 1 | S + V | Birds **fly**. 鸟会飞。 |
+| 2 | S + V + C | The soup **is hot**. 汤很热。 |
+| 3 | S + V + O | We **love English**. 我们喜欢英语。 |
+| 4 | S + V + IO + DO | Dad **gave me a gift**. 爸爸给了我一份礼物。 |
+| 5 | S + V + O + OC | They **made me happy**. 他们让我开心。 |
+
+## 加上“时间和地点”
+
+基础句：**Lily reads.**
+
+变长：**Lily reads a book in the library every Saturday.**
+
+主干仍然是 Lily reads；其余部分只是补充信息。
+
+## 轮到你
+
+用 **I / play / football / after school** 造句：**I play football after school.**
+`
+
+var nounArticlePrepMd = `
+## 1. 名词：给人和事物命名
+
+名词可以是人、地方、动物或东西：**teacher, park, cat, book**。数一数它们：
+
+- 一个：**a book**；两个以上：**two books**
+- 不可数：**some water / some rice**，通常不说 two waters
+
+## 2. a / an / the
+
+- **a**：一个，后面接辅音音素：a dog
+- **an**：一个，后面接元音音素：an apple, an hour
+- **the**：你我都知道的那个：I saw a dog. **The dog** was small.
+
+## 3. in / on / at
+
+把介词想成小地图：
+
+| 词 | 常见感觉 | 例子 |
+|---|---|---|
+| in | 在里面 / 大范围时间 | in the box, in July |
+| on | 在表面 / 某一天 | on the table, on Monday |
+| at | 一个点 / 具体时刻 | at school, at 7 o'clock |
+
+## 小口诀
+
+**in** 大盒子，**on** 表面上，**at** 小点点。先用真实物品说三遍，再写句子。
+`
+
+var phoneticsMd = `
+## 音标不是考试，是“声音地图”
+
+看到新词时，音标可以告诉你怎么读；听到声音时，它也能帮助你猜单词。
+
+## 三步练习法
+
+1. **听**：先听词的完整读音，不急着看字母。
+2. **拆**：找元音核心和重音，例如 **TA-ble**。
+3. **跟**：慢速跟读，再用正常速度读回去。
+
+## 容易混淆的声音
+
+| 对比 | 例子 | 小提醒 |
+|---|---|---|
+| /iː/ vs /ɪ/ | sheep / ship | 长短音都要听清 |
+| /æ/ vs /e/ | cat / ket | 嘴巴张开的程度不同 |
+| /θ/ vs /s/ | think / sink | /θ/ 舌尖轻触上下齿 |
+
+每天挑 3 个词：听一次、跟读三次、放进自己的句子一次。声音和意义一起记，最不容易忘。
+`
+
+var vocabularyMd = `
+## 词汇不是“单词孤岛”
+
+不要只背 **make = 制作**。把它和常用搭配一起带走：**make a cake, make a plan, make a mistake**。
+
+## 分阶段学习
+
+| 阶段 | 目标 | 做法 |
+|---|---|---|
+| Pre-A1–A1 | 听懂和说出身边的词 | 图片 + 动作 + 短句 |
+| A2–B1 | 在场景中灵活使用 | 主题词 + 词块 + 小对话 |
+| B2–C2 | 精确表达观点 | 同义词辨析 + 语料例句 + 写作 |
+
+## 一个词卡模板
+
+**word:** curious /ˈkjʊəriəs/ 好奇的<br>
+**chunk:** be curious about<br>
+**example:** I am curious about space.<br>
+**my sentence:** __________________
+
+## 复习节奏
+
+学习当天 → 第二天 → 一周后 → 一个月后。每次先遮住中文，尝试回忆英文；想不起来再看答案。能在句子里用出来，才算真正学会。
 `
