@@ -54,12 +54,21 @@ var categorySeeds = []categorySeed{
 	{"vocabulary", "主题词汇：从身边开始", "vocabulary-themes", "", 1},
 	{"vocabulary", "构词法：词根、前缀与后缀", "vocabulary-word-formation", "", 2},
 	{"vocabulary", "词块、搭配与短语动词", "vocabulary-collocations", "", 3},
-	{"parts-of-speech", "名词与复数", "parts-noun", "", 1},
-	{"parts-of-speech", "代词与限定词", "parts-pronoun-determiner", "", 2},
-	{"parts-of-speech", "形容词与副词", "parts-adjective-adverb", "", 3},
-	{"parts-of-speech", "介词、连词与感叹词", "parts-function-words", "", 4},
-	{"verb-system", "动词形式与助动词", "verbs-forms-auxiliaries", "", 1},
-	{"verb-system", "情态动词：能力、义务和推测", "verbs-modals", "", 2},
+	{"parts-of-speech", "名词", "parts-noun", "", 1},
+	{"parts-of-speech", "代词", "parts-pronoun-determiner", "", 2},
+	{"parts-of-speech", "动词", "verb-system", "", 3},
+	{"verb-system", "实义动词", "verb-action", "", 1},
+	{"verb-system", "系动词", "verb-linking", "", 2},
+	{"verb-system", "助动词", "verbs-forms-auxiliaries", "", 3},
+	{"verb-system", "情态动词", "verbs-modals", "", 4},
+	{"verb-system", "短语动词", "verb-phrasal", "", 5},
+	{"parts-of-speech", "形容词", "parts-adjective-adverb", "", 4},
+	{"parts-of-speech", "副词", "parts-adverb", "", 5},
+	{"parts-of-speech", "介词", "parts-function-words", "", 6},
+	{"parts-of-speech", "连词", "parts-conjunction", "", 7},
+	{"parts-of-speech", "限定词", "parts-determiner", "", 8},
+	{"parts-of-speech", "数词", "parts-numeral", "", 9},
+	{"parts-of-speech", "感叹词", "parts-interjection", "", 10},
 	{"voice-nonfinite", "被动语态", "voice-passive", "", 1},
 	{"voice-nonfinite", "不定式", "nonfinite-infinitive", "", 2},
 	{"voice-nonfinite", "动名词与分词", "nonfinite-gerund-participle", "", 3},
@@ -102,6 +111,13 @@ var catalogEntries = []catalogEntry{
 	{"clause-noun", "名词性从句：把一句话当成名词", "that、whether、what、who 引导的主语、宾语和表语从句。", nounClauseMd, 4, 7, 1},
 	{"clause-relative", "定语从句：给名词加说明", "who、which、that 和 whose 把两个信息接成一句话。", relativeClauseMd, 4, 6, 2},
 	{"clause-adverbial", "状语从句：时间、原因、条件和让步", "because、when、if、although 等连接逻辑关系。", adverbialClauseMd, 3, 7, 3},
+	{"sentence-elements", "主语：句子是谁或什么", "找到动作的发出者、状态的承受者，以及 it、there 等形式主语。", sentenceSubjectMd, 1, 4, 1},
+	{"sentence-elements", "谓语：句子的发动机", "用实义动词、助动词和系动词说清楚发生了什么。", sentencePredicateMd, 1, 4, 2},
+	{"sentence-elements", "宾语：动作指向谁或什么", "识别直接宾语、间接宾语，以及代词和从句作宾语。", sentenceObjectMd, 1, 4, 3},
+	{"sentence-elements", "表语：说明主语是什么或怎么样", "掌握系动词后面的名词、形容词和其他表语结构。", sentenceComplementMd, 1, 4, 4},
+	{"sentence-elements", "定语：给名词加说明", "用形容词、介词短语和定语从句描述人或事物。", sentenceAttributeMd, 2, 5, 5},
+	{"sentence-elements", "状语：补充时间、地点和方式", "说明动作何时、何地、如何发生，以及原因、条件和目的。", sentenceAdverbialMd, 1, 5, 6},
+	{"sentence-elements", "补语：把意思补完整", "理解宾语补足语和主语补足语，区分补语与普通状语。", sentenceObjectComplementMd, 3, 6, 7},
 	{"sentence-elements-advanced", "长句拆解：主干、修饰和逻辑", "面对长难句先找谓语和主干，再处理插入与从句。", sentenceAdvancedMd, 4, 7, 1},
 	{"phonetics-vowels", "元音：嘴巴的形状", "用口型、舌位和长短音区分容易混淆的元音。", vowelsMd, 1, 4, 1},
 	{"phonetics-consonants", "辅音：气流和摩擦", "掌握清浊音、摩擦音和汉语里不常见的声音。", consonantsMd, 1, 4, 2},
@@ -111,10 +127,18 @@ var catalogEntries = []catalogEntry{
 	{"vocabulary-collocations", "词块、搭配与短语动词", "记住词语常和谁一起出现，表达会更准确自然。", collocationsMd, 3, 7, 3},
 	{"parts-noun", "名词与复数：数得清才说得准", "可数/不可数、规则复数、不规则复数和所有格。", nounsMd, 1, 4, 1},
 	{"parts-pronoun-determiner", "代词与限定词", "I/me、this/that、some/any、each/every 的用法地图。", pronounsMd, 2, 6, 2},
+	{"verb-action", "实义动词：表达动作和状态", "run、know、write 等动词直接表达动作、变化或状态。", actionVerbMd, 1, 4, 1},
+	{"verb-linking", "系动词：连接主语和说明", "be、become、seem、feel 等系动词后面通常接表语。", linkingVerbMd, 2, 5, 2},
 	{"parts-adjective-adverb", "形容词与副词", "描述事物、动作和程度，理解 -ly 与位置变化。", adjectivesMd, 2, 5, 3},
 	{"parts-function-words", "介词、连词与感叹词", "用小词表达空间、时间、原因、转折和情绪。", functionWordsMd, 2, 6, 4},
 	{"verbs-forms-auxiliaries", "动词形式与助动词", "原形、三单、过去式、分词，以及 do/be/have 如何帮忙。", verbFormsMd, 2, 6, 1},
 	{"verbs-modals", "情态动词：能力、义务和推测", "can、must、should、may、might 等表达态度和可能性。", modalsMd, 3, 7, 2},
+	{"verb-phrasal", "短语动词：动词加小词", "look up、give up、turn on 等组合常有新的整体含义。", phrasalVerbMd, 3, 6, 5},
+	{"parts-adverb", "副词：说明动作和程度", "副词修饰动词、形容词或整个句子，表达时间、方式和程度。", adverbsMd, 2, 5, 5},
+	{"parts-conjunction", "连词：把意思连接起来", "and、but、because、although 等词表达并列和逻辑关系。", conjunctionsMd, 2, 6, 7},
+	{"parts-determiner", "限定词：限定名词范围", "a、the、this、some、each 等词帮助我们确定名词指什么。", determinersMd, 2, 5, 8},
+	{"parts-numeral", "数词：表达数量和顺序", "基数词、序数词和数量表达让信息更准确。", numeralsMd, 1, 4, 9},
+	{"parts-interjection", "感叹词：表达即时情绪", "oh、wow、ouch 等短词表达惊讶、疼痛、赞叹等反应。", interjectionsMd, 1, 3, 10},
 	{"voice-passive", "被动语态：关注事情而不是谁做的", "be + 过去分词，以及时态、情态动词和 get-passive。", passiveMd, 4, 7, 1},
 	{"nonfinite-infinitive", "不定式：to do 的多种角色", "作目的、主语、宾语、宾补和后置修饰。", infinitiveMd, 4, 7, 2},
 	{"nonfinite-gerund-participle", "动名词与分词", "doing 可以是名词，也可以是进行/修饰的一部分。", gerundParticipleMd, 4, 7, 3},
@@ -173,6 +197,9 @@ func ensureContentCatalog(db *gorm.DB) error {
 		}
 		ids[seed.code] = category.Id
 	}
+	if err := syncPartsOfSpeechCategories(db, ids); err != nil {
+		return err
+	}
 
 	for _, seed := range catalogEntries {
 		categoryID := ids[seed.category]
@@ -189,6 +216,47 @@ func ensureContentCatalog(db *gorm.DB) error {
 		}
 		entry := models.WikiEntry{CategoryId: categoryID, Title: seed.title, Summary: seed.summary, ContentMd: seed.md, CefrMin: seed.min, CefrMax: seed.max, Status: "published", Sort: seed.sort}
 		if err := db.Create(&entry).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// syncPartsOfSpeechCategories upgrades the original flat/combined menu in-place.
+// Category codes are kept stable so existing entries and user edits remain attached.
+func syncPartsOfSpeechCategories(db *gorm.DB, ids map[string]int) error {
+	type categoryUpdate struct {
+		code, parent, name string
+		sort               int
+	}
+	updates := []categoryUpdate{
+		{"parts-noun", "parts-of-speech", "名词", 1},
+		{"parts-pronoun-determiner", "parts-of-speech", "代词", 2},
+		{"verb-system", "parts-of-speech", "动词", 3},
+		{"verb-action", "verb-system", "实义动词", 1},
+		{"verb-linking", "verb-system", "系动词", 2},
+		{"verbs-forms-auxiliaries", "verb-system", "助动词", 3},
+		{"verbs-modals", "verb-system", "情态动词", 4},
+		{"verb-phrasal", "verb-system", "短语动词", 5},
+		{"parts-adjective-adverb", "parts-of-speech", "形容词", 4},
+		{"parts-adverb", "parts-of-speech", "副词", 5},
+		{"parts-function-words", "parts-of-speech", "介词", 6},
+		{"parts-conjunction", "parts-of-speech", "连词", 7},
+		{"parts-determiner", "parts-of-speech", "限定词", 8},
+		{"parts-numeral", "parts-of-speech", "数词", 9},
+		{"parts-interjection", "parts-of-speech", "感叹词", 10},
+	}
+	for _, update := range updates {
+		id := ids[update.code]
+		parentID := ids[update.parent]
+		if id == 0 || parentID == 0 {
+			return gorm.ErrRecordNotFound
+		}
+		if err := db.Model(&models.WikiCategory{}).Where("id = ?", id).Updates(map[string]interface{}{
+			"parent_id": parentID,
+			"name":      update.name,
+			"sort":      update.sort,
+		}).Error; err != nil {
 			return err
 		}
 	}
@@ -395,6 +463,208 @@ var sentenceAdvancedMd = `
 3. 再按 because、although、which、that 等连接词恢复逻辑。
 
 例：**The book that you gave me yesterday is useful.** 主干是 **The book is useful**；中间部分是定语从句。
+`
+
+var sentenceSubjectMd = `
+## 主语是什么
+
+主语是句子里“谁”或“什么”，通常放在谓语前：**The girl** smiles.
+
+| 常见形式 | 例句 |
+|---|---|
+| 名词或代词 | **Tom** runs. / **She** is my friend. |
+| 名词短语 | **The little dog** is sleeping. |
+| 动名词或不定式 | **Reading** helps. / **To travel** is exciting. |
+| 从句 | **What he said** is true. |
+
+**it** 可以作形式主语：**It** is easy to learn. **there** 常用来引出存在：**There is** a book on the desk。真正的主语是 a book。
+
+找主语时先圈出谓语，再问“谁做了这件事”或“什么处于这个状态”。被动句 **The window was broken** 中，window 是语法主语，但不一定是动作执行者。
+`
+
+var sentencePredicateMd = `
+## 谓语是什么
+
+谓语是句子的发动机，说明主语做什么、发生什么或处于什么状态：**Birds fly.**
+
+| 类型 | 例句 |
+|---|---|
+| 实义动词 | Mia **reads**. |
+| 动词短语 | Mia **is reading**. |
+| 系动词结构 | Mia **is happy**. |
+
+时态、否定可能需要多个词，但它们共同组成谓语：**does not like**、**has finished**、**will be working**。
+
+一般现在时中，第三人称单数主语后的动词通常加 **-s/-es**：**He plays** football；有 **does** 时实义动词恢复原形：**Does he play** football？
+
+练习：**The children have been practicing English.** 完整谓语是 **have been practicing**。
+`
+
+var sentenceObjectMd = `
+## 宾语是什么
+
+宾语是动作直接作用的对象，常回答“做什么”或“对谁做”：**I read books.** books 是 read 的宾语。
+
+- 直接宾语：**She opened the door.**
+- 间接宾语：**Dad gave me a gift.** me 是接受者，a gift 是直接宾语。
+
+同一句也可以改成：**Dad gave a gift to me.**
+
+| 形式 | 例句 |
+|---|---|
+| 名词或代词 | I like **music**. / I like **it**. |
+| 动名词 | She enjoys **reading**. |
+| 不定式 | We want **to help**. |
+| 宾语从句 | I know **that he is busy**. |
+
+在 **I put the book on the desk** 中，the book 是宾语，on the desk 是地点状语。
+`
+
+var sentenceComplementMd = `
+## 表语是什么
+
+表语放在系动词后面，说明主语“是什么”或“怎么样”：**The sky is blue.**
+
+常见系动词有 **be, become, get, seem, look, feel, sound, smell, taste**。
+
+| 表语类型 | 例句 |
+|---|---|
+| 形容词 | The soup **tastes delicious**. |
+| 名词 | She **is a doctor**. |
+| 介词短语 | The keys **are on the table**. |
+| 从句 | The question **is whether he will come**. |
+
+**She is a teacher** 中的 a teacher 是表语；**She met a teacher** 中的 a teacher 是 meet 的宾语。判断关键是：它是在介绍主语，还是动作作用的对象。
+`
+
+var sentenceAttributeMd = `
+## 定语是什么
+
+定语给名词或代词加说明，回答“什么样的、哪一个、谁的”。
+
+| 形式 | 例句 |
+|---|---|
+| 形容词 | a **beautiful** garden |
+| 所有格 | **Tom's** bike |
+| 介词短语 | the book **on the desk** |
+| 分词短语 | the girl **wearing a red hat** |
+| 定语从句 | the movie **that we watched** |
+
+单个形容词通常放在名词前：**a small house**；较长的短语或从句通常放在名词后：**a house near the river**。
+
+**The happy child smiles** 中 happy 是定语；**The child is happy** 中 happy 是表语。
+`
+
+var sentenceAdverbialMd = `
+## 状语是什么
+
+状语补充动作或整个句子的背景，说明时间、地点、方式、原因、条件、目的或程度。
+
+| 类型 | 例句 |
+|---|---|
+| 时间 | We study **every day**. |
+| 地点 | They play **in the park**. |
+| 方式 | She speaks **slowly**. |
+| 原因 | He stayed home **because he was ill**. |
+| 条件 | **If it rains**, we will stay inside. |
+| 目的 | I went out **to buy milk**. |
+
+时间和地点状语常放在句末，也可以放在句首：**Yesterday, we met at school.**
+
+在 **Lily reads a book in the library every Saturday** 中，主干是 **Lily reads a book**，其余两部分都是状语。
+`
+
+var sentenceObjectComplementMd = `
+## 补语是什么
+
+补语把句子意思补完整。宾语补足语放在宾语后面，说明宾语是什么或处于什么状态。
+
+| 结构 | 例句 | 说明 |
+|---|---|---|
+| make + 宾语 + 形容词 | The news made me **happy**. | happy 说明 me 的状态 |
+| call + 宾语 + 名词 | They called him **a hero**. | a hero 说明 him 是什么 |
+| see + 宾语 + 动词 | I saw her **dance**. | dance 是 her 做的动作 |
+| keep + 宾语 + 分词 | Keep the door **closed**. | closed 说明 door 的状态 |
+
+**They painted the door red** 中 red 是宾语补足语；**They painted the door carefully** 中 carefully 只说明方式，是状语。
+
+记住：补语和前面的主语或宾语有“说明关系”，这也是它和普通状语的重要区别。
+`
+
+var actionVerbMd = `
+## 实义动词做什么
+
+实义动词直接表达动作、变化或状态：**run, write, open, know, like**。它们可以独立构成谓语：**Birds fly.**
+
+有些实义动词需要宾语：**I opened the door.** 有些不需要：**The baby sleeps.** 学习时一起记住动词是否常带宾语，会更容易搭出完整句子。
+`
+
+var linkingVerbMd = `
+## 系动词连接什么
+
+系动词把主语和表语连接起来，不表示主语对某物做了动作：**The soup smells good.**
+
+常见系动词有 **be, become, seem, look, feel, sound, smell, taste, remain**。它们后面常接形容词或名词，用来说明主语的状态或身份。
+`
+
+var phrasalVerbMd = `
+## 短语动词
+
+短语动词由“动词 + 副词或介词”组成，整体意思有时不能逐词翻译：**give up** 是“放弃”，**look after** 是“照顾”。
+
+| 短语动词 | 意思 | 例句 |
+|---|---|---|
+| turn on | 打开 | Turn on the light. |
+| look for | 寻找 | I am looking for my keys. |
+| take off | 脱下；起飞 | The plane took off. |
+
+先把短语当作一个整体记，再关注宾语位置：**turn on the light** 和 **turn the light on** 都可以，但代词通常放中间：**turn it on**。
+`
+
+var adverbsMd = `
+## 副词说明什么
+
+副词常修饰动词、形容词、副词或整个句子，说明“怎样、何时、哪里、多久或到什么程度”：**She sings beautifully.**
+
+常见类型有方式 **slowly**、时间 **today**、频率 **often**、地点 **here** 和程度 **very**。频率副词通常放在实义动词前：**I often read**；放在 be 后：**She is often late**。
+`
+
+var conjunctionsMd = `
+## 连词连接什么
+
+连词把词、短语或分句连接起来：**tea and coffee**，**I stayed home because it rained**。
+
+**and** 表示并列，**but** 表示转折，**so** 表示结果，**because** 表示原因，**although** 表示让步。连接两个完整句子时，注意连接词前后的结构要完整。
+`
+
+var determinersMd = `
+## 限定词限定什么
+
+限定词放在名词前，帮助我们判断这个名词是哪个、多少或属于谁：**a book, the book, this book, my book, some books**。
+
+常见限定词包括冠词 **a/an/the**、指示词 **this/that**、物主限定词 **my/your**、数量词 **some/many** 和 **each/every**。通常不能随意连续使用两个核心限定词：说 **my book**，不说 **the my book**。
+`
+
+var numeralsMd = `
+## 数词表达数量和顺序
+
+基数词回答“多少”：**one, two, fifty**；序数词回答“第几个”：**first, second, third**。
+
+| 用法 | 例句 |
+|---|---|
+| 数量 | I have **three** books. |
+| 顺序 | She won **first** prize. |
+| 年龄 | He is **ten** years old. |
+
+注意序数词前常用 **the**：**the first day**。数字和名词搭配时，也要留意可数名词的单复数。
+`
+
+var interjectionsMd = `
+## 感叹词表达反应
+
+感叹词是表达即时情绪或反应的短词，常独立使用：**Wow!** **Oh no!** **Ouch!**
+
+它们不一定参与句子的语法骨架。写作中可以用逗号或感叹号隔开：**Well, let's try again.** **Great!** 语气要根据场景选择，正式写作中不要过度使用。
 `
 
 var vowelsMd = `
